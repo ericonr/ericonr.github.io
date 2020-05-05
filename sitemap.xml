@@ -1,14 +1,38 @@
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url>
-<loc>https://elm-pages-starter.netlify.com</loc>
-</url>
-<url>
-<loc>https://elm-pages-starter.netlify.comblog</loc>
-</url>
-<url>
-<loc>https://elm-pages-starter.netlify.comblog/hello-world</loc>
-</url>
-<url>
-<loc>https://elm-pages-starter.netlify.comproject</loc>
-</url>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>http://ericonr.github.io/posts/linux-capabilities/</loc>
+    <lastmod>2020-12-29T14:18:33-03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://ericonr.github.io/posts/</loc>
+    <lastmod>2020-12-29T14:18:33-03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://ericonr.github.io/</loc>
+    <lastmod>2020-12-29T14:18:33-03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://ericonr.github.io/about/</loc>
+    <lastmod>2020-06-03T02:37:50-03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://ericonr.github.io/projects/</loc>
+    <lastmod>2020-06-03T02:19:40-03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://ericonr.github.io/categories/</loc>
+  </url>
+  
+  <url>
+    <loc>http://ericonr.github.io/tags/</loc>
+  </url>
+  
 </urlset>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Érico&#39;s place</title>
+    <link>http://ericonr.github.io/posts/</link>
+    <description>Recent content in Posts on Érico&#39;s place</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 29 Dec 2020 14:18:33 -0300</lastBuildDate><atom:link href="http://ericonr.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Improving capability usage on Linux</title>
+      <link>http://ericonr.github.io/posts/linux-capabilities/</link>
+      <pubDate>Tue, 29 Dec 2020 14:18:33 -0300</pubDate>
+      
+      <guid>http://ericonr.github.io/posts/linux-capabilities/</guid>
+      <description>Capabilities are a mechanism that allow privileges usually reserved to the super user to be granted or revoked in a more granular manner. Nowadays, their usage is reasonably wide spread across the Linux ecosystem, even though some warts remain in the interface, what with them being applied per thread, not per process (this is a recurring issue on Linux with credentials: user, group and supplementary group IDs are all per-thread attributes, instead of being applied process wide; this requires clever workarounds in libcs, as well as any language runtime that bypasses libc - see this Go commit that finally implemented the credential synchronization mechanism in their runtime).</description>
+    </item>
+    
+  </channel>
+</rss>
