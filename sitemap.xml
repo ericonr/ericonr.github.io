@@ -1,0 +1,14 @@
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+<loc>https://elm-pages-starter.netlify.com</loc>
+</url>
+<url>
+<loc>https://elm-pages-starter.netlify.comblog</loc>
+</url>
+<url>
+<loc>https://elm-pages-starter.netlify.comblog/hello-world</loc>
+</url>
+<url>
+<loc>https://elm-pages-starter.netlify.comproject</loc>
+</url>
+</urlset>
