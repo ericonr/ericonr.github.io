@@ -14,7 +14,7 @@
 <body>
 	<header>
 	====================<br>
-	== <a href="http://ericonr.github.io/">Érico&#39;s place</a> ==<br>
+	== <a href="https://erico.dev">Érico&#39;s place</a> ==<br>
 	====================
 	<div style="float: right;"></div><br>
 	<p>
@@ -74,7 +74,7 @@ had been built with, only what kernel header version had been used when
 building util-linux.</p>
 <p>How they determined the last available capability in the old version can be
 seen here:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// SPDX-License-Identifier: GPL-2.0-or-later
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// SPDX-License-Identifier: GPL-2.0-or-later
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">cap_last_cap</span>(<span style="color:#66d9ef">void</span>)
 {
 	<span style="color:#75715e">/* CAP_LAST_CAP is untrustworthy. */</span>
@@ -100,7 +100,7 @@ seen here:</p>
 	<span style="color:#66d9ef">return</span> ret;
 }
 </code></pre></div><p>Then, in <code>setpriv.c</code>, we can see where it was erroring out:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// SPDX-License-Identifier: GPL-2.0-or-later
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// SPDX-License-Identifier: GPL-2.0-or-later
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">do_caps</span>(<span style="color:#66d9ef">enum</span> cap_type type, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>caps)
 {
 	<span style="color:#75715e">/*
@@ -147,7 +147,7 @@ set, or -1, in the case of an invalid (read &ldquo;unknown to the kernel&rdquo;)
 capability. This meant that with some smart binary searching, we could find the
 highest capability known to a kernel without an absurd number of system calls.
 After some suggestions for improvements, this is what I ended up with:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// SPDX-License-Identifier: GPL-2.0-or-later
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// SPDX-License-Identifier: GPL-2.0-or-later
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">test_cap</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> cap)
 {
 	<span style="color:#75715e">/* prctl returns 0 or 1 for valid caps, -1 otherwise */</span>
@@ -208,7 +208,7 @@ learned that the maximum value for capabilities supported by the kernel isn&rsqu
 <code>INT_MAX</code>, but instead 64 (at least as of 2020), because capabilities are
 tracked in the kernel and file systems as a bitmask stored in two 32-bit
 integers. The final version of libcap-ng&rsquo;s <code>init_lib</code> can be seen below:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// SPDX-License-Identifier: LGPL-2.1-or-later
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// SPDX-License-Identifier: LGPL-2.1-or-later
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">init_lib</span>(<span style="color:#66d9ef">void</span>) __attribute__ ((constructor));
 <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">init_lib</span>(<span style="color:#66d9ef">void</span>)
 {
@@ -285,9 +285,9 @@ improved the utilities whose limitations were affecting us now.</p>
 
 
 	<footer>
-	<p>&copy; 2020 <a href="http://ericonr.github.io/"><b>Érico&#39;s place</b></a>.
+	<p>&copy; 2021 <a href="https://erico.dev"><b>Érico&#39;s place</b></a>.
+	<a href="https://git.erico.dev"><b>Gitea</b></a>.
 	<a href="https://github.com/ericonr"><b>Github</b></a>.
-	<a href="https://twitter.com/JumpingUnicorn3"><b>Twitter</b></a>.
 	</p>
 </footer>
 

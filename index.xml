@@ -2,26 +2,26 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Érico&#39;s place</title>
-    <link>http://ericonr.github.io/</link>
+    <link>https://erico.dev/</link>
     <description>Recent content on Érico&#39;s place</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 29 Dec 2020 14:18:33 -0300</lastBuildDate><atom:link href="http://ericonr.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 29 Dec 2020 14:18:33 -0300</lastBuildDate><atom:link href="https://erico.dev/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Improving capability usage on Linux</title>
-      <link>http://ericonr.github.io/posts/linux-capabilities/</link>
+      <link>https://erico.dev/posts/linux-capabilities/</link>
       <pubDate>Tue, 29 Dec 2020 14:18:33 -0300</pubDate>
       
-      <guid>http://ericonr.github.io/posts/linux-capabilities/</guid>
+      <guid>https://erico.dev/posts/linux-capabilities/</guid>
       <description>Capabilities are a mechanism that allow privileges usually reserved to the super user to be granted or revoked in a more granular manner. Nowadays, their usage is reasonably wide spread across the Linux ecosystem, even though some warts remain in the interface, what with them being applied per thread, not per process (this is a recurring issue on Linux with credentials: user, group and supplementary group IDs are all per-thread attributes, instead of being applied process wide; this requires clever workarounds in libcs, as well as any language runtime that bypasses libc - see this Go commit that finally implemented the credential synchronization mechanism in their runtime).</description>
     </item>
     
     <item>
       <title>About</title>
-      <link>http://ericonr.github.io/about/</link>
+      <link>https://erico.dev/about/</link>
       <pubDate>Wed, 03 Jun 2020 02:37:50 -0300</pubDate>
       
-      <guid>http://ericonr.github.io/about/</guid>
+      <guid>https://erico.dev/about/</guid>
       <description>Hello! This is a personal blog, for projects and thoughts. We&amp;rsquo;ll see how it goes.
 Click here!
  Olá! Esse é um blog pessoal, para projetos e pensamentos. Vamos ver o que que sai.
@@ -34,10 +34,10 @@ IRC: &amp;ldquo;ericonr&amp;rdquo; or &amp;ldquo;ericonr_&amp;rdquo; on Freenode
     
     <item>
       <title>Projects</title>
-      <link>http://ericonr.github.io/projects/</link>
+      <link>https://erico.dev/projects/</link>
       <pubDate>Wed, 03 Jun 2020 02:19:40 -0300</pubDate>
       
-      <guid>http://ericonr.github.io/projects/</guid>
+      <guid>https://erico.dev/projects/</guid>
       <description>Individual projects  purr-c: C project using BearSSL to learn some networking, basic crypto and SSL. It is mainly a client for the PurritoBin pastebin, but also grew to include a Gemini client. get-otp: shell + C project for a very simple terminal client for TOTP codes, without depending on a phone. AppPauser: Go project on Linux for sending SIGSTP and SIGCON signals to a monitored application. AppPauserRunit: Re-implementation of AppPauser, but using runit + shell instead.</description>
     </item>
     
