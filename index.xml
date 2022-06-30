@@ -26,21 +26,21 @@ Occupation: Student at University of Campinas and intern at Sirius Synchrotron L
     </item>
     
     <item>
+      <title>Projects</title>
+      <link>https://erico.dev/projects/</link>
+      <pubDate>Thu, 30 Jun 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://erico.dev/projects/</guid>
+      <description>Individual projects avahi-dns: turn mDNS domains as reported by Avahi into DNS records. Might someday become a proper DNS server. dnsquery: DNS client written for learning purposes. ep: my shell prompt. Uses threads oportunistically. erm: a threaded rm(1) implementation. Use at your own peril. get-otp: shell + C project for a very simple terminal client for TOTP codes, without depending on a phone. purr-c: C project using BearSSL to learn some networking, basic crypto and SSL.</description>
+    </item>
+    
+    <item>
       <title>Improving capability usage on Linux</title>
       <link>https://erico.dev/posts/linux-capabilities/</link>
       <pubDate>Tue, 29 Dec 2020 14:18:33 -0300</pubDate>
       
       <guid>https://erico.dev/posts/linux-capabilities/</guid>
       <description>Capabilities are a mechanism that allow privileges usually reserved to the super user to be granted or revoked in a more granular manner. Nowadays, their usage is reasonably wide spread across the Linux ecosystem, even though some warts remain in the interface, what with them being applied per thread, not per process (this is a recurring issue on Linux with credentials: user, group and supplementary group IDs are all per-thread attributes, instead of being applied process wide; this requires clever workarounds in libcs, as well as any language runtime that bypasses libc - see this Go commit that finally implemented the credential synchronization mechanism in their runtime).</description>
-    </item>
-    
-    <item>
-      <title>Projects</title>
-      <link>https://erico.dev/projects/</link>
-      <pubDate>Wed, 03 Jun 2020 02:19:40 -0300</pubDate>
-      
-      <guid>https://erico.dev/projects/</guid>
-      <description>Individual projects purr-c: C project using BearSSL to learn some networking, basic crypto and SSL. It is mainly a client for the PurritoBin pastebin, but also grew to include a Gemini client. get-otp: shell + C project for a very simple terminal client for TOTP codes, without depending on a phone. AppPauser: Go project on Linux for sending SIGSTP and SIGCON signals to a monitored application. AppPauserRunit: Re-implementation of AppPauser, but using runit + shell instead.</description>
     </item>
     
   </channel>
