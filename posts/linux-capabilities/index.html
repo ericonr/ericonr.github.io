@@ -74,53 +74,53 @@ had been built with, only what kernel header version had been used when
 building util-linux.</p>
 <p>How they determined the last available capability in the old version can be
 seen here:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// SPDX-License-Identifier: GPL-2.0-or-later
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">cap_last_cap</span>(<span style="color:#66d9ef">void</span>)
-{
-	<span style="color:#75715e">/* CAP_LAST_CAP is untrustworthy. */</span>
-	<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> ret <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
-	<span style="color:#66d9ef">int</span> matched;
-	FILE <span style="color:#f92672">*</span>f;
-
-	<span style="color:#66d9ef">if</span> (ret <span style="color:#f92672">!=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
-		<span style="color:#66d9ef">return</span> ret;
-
-	f <span style="color:#f92672">=</span> fopen(_PATH_PROC_CAPLASTCAP, <span style="color:#e6db74">&#34;r&#34;</span>);
-	<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>f) {
-		ret <span style="color:#f92672">=</span> CAP_LAST_CAP;	<span style="color:#75715e">/* guess */</span>
-		<span style="color:#66d9ef">return</span> ret;
-	}
-
-	matched <span style="color:#f92672">=</span> fscanf(f, <span style="color:#e6db74">&#34;%d&#34;</span>, <span style="color:#f92672">&amp;</span>ret);
-	fclose(f);
-
-	<span style="color:#66d9ef">if</span> (matched <span style="color:#f92672">!=</span> <span style="color:#ae81ff">1</span>)
-		ret <span style="color:#f92672">=</span> CAP_LAST_CAP;	<span style="color:#75715e">/* guess */</span>
-
-	<span style="color:#66d9ef">return</span> ret;
-}
-</code></pre></div><p>Then, in <code>setpriv.c</code>, we can see where it was erroring out:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// SPDX-License-Identifier: GPL-2.0-or-later
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">do_caps</span>(<span style="color:#66d9ef">enum</span> cap_type type, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>caps)
-{
-	<span style="color:#75715e">/*
-</span><span style="color:#75715e">	...
-</span><span style="color:#75715e">	*/</span>
-		<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>strcmp(c <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;all&#34;</span>)) {
-			<span style="color:#66d9ef">int</span> i;
-			<span style="color:#75715e">/* It would be really bad if -all didn&#39;t drop all
-</span><span style="color:#75715e">			 * caps.  It&#39;s better to just fail. */</span>
-			<span style="color:#66d9ef">if</span> (cap_last_cap() <span style="color:#f92672">&gt;</span> CAP_LAST_CAP)
-				errx(SETPRIV_EXIT_PRIVERR,
-				     _(<span style="color:#e6db74">&#34;libcap-ng is too old for </span><span style="color:#ae81ff">\&#34;</span><span style="color:#e6db74">all</span><span style="color:#ae81ff">\&#34;</span><span style="color:#e6db74"> caps&#34;</span>));
-			<span style="color:#66d9ef">for</span> (i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;=</span> CAP_LAST_CAP; i<span style="color:#f92672">++</span>)
-				cap_update(action, type, i);
-		}
-	<span style="color:#75715e">/*
-</span><span style="color:#75715e">	...
-</span><span style="color:#75715e">	*/</span>
-}
-</code></pre></div><p>Basically, this code block existed because the value returned by
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">// SPDX-License-Identifier: GPL-2.0-or-later
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">cap_last_cap</span>(<span style="color:#66d9ef">void</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">/* CAP_LAST_CAP is untrustworthy. */</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> ret <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> matched;
+</span></span><span style="display:flex;"><span>	FILE <span style="color:#f92672">*</span>f;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (ret <span style="color:#f92672">!=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> ret;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	f <span style="color:#f92672">=</span> fopen(_PATH_PROC_CAPLASTCAP, <span style="color:#e6db74">&#34;r&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>f) {
+</span></span><span style="display:flex;"><span>		ret <span style="color:#f92672">=</span> CAP_LAST_CAP;	<span style="color:#75715e">/* guess */</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> ret;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	matched <span style="color:#f92672">=</span> fscanf(f, <span style="color:#e6db74">&#34;%d&#34;</span>, <span style="color:#f92672">&amp;</span>ret);
+</span></span><span style="display:flex;"><span>	fclose(f);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (matched <span style="color:#f92672">!=</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>		ret <span style="color:#f92672">=</span> CAP_LAST_CAP;	<span style="color:#75715e">/* guess */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> ret;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Then, in <code>setpriv.c</code>, we can see where it was erroring out:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">// SPDX-License-Identifier: GPL-2.0-or-later
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">do_caps</span>(<span style="color:#66d9ef">enum</span> cap_type type, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>caps)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	*/</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>strcmp(c <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;all&#34;</span>)) {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">int</span> i;
+</span></span><span style="display:flex;"><span>			<span style="color:#75715e">/* It would be really bad if -all didn&#39;t drop all
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">			 * caps.  It&#39;s better to just fail. */</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> (cap_last_cap() <span style="color:#f92672">&gt;</span> CAP_LAST_CAP)
+</span></span><span style="display:flex;"><span>				errx(SETPRIV_EXIT_PRIVERR,
+</span></span><span style="display:flex;"><span>				     _(<span style="color:#e6db74">&#34;libcap-ng is too old for </span><span style="color:#ae81ff">\&#34;</span><span style="color:#e6db74">all</span><span style="color:#ae81ff">\&#34;</span><span style="color:#e6db74"> caps&#34;</span>));
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">for</span> (i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;=</span> CAP_LAST_CAP; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>				cap_update(action, type, i);
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	*/</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Basically, this code block existed because the value returned by
 <code>cap_last_cap()</code> could have been a guess, and therefore couldn&rsquo;t be trusted. It
 should be noted that the logic was still somewhat erroneous: on a newer kernel
 where <code>/proc</code> wasn&rsquo;t mounted, the function would return <code>CAP_LAST_CAP</code> and the
@@ -147,56 +147,56 @@ set, or -1, in the case of an invalid (read &ldquo;unknown to the kernel&rdquo;)
 capability. This meant that with some smart binary searching, we could find the
 highest capability known to a kernel without an absurd number of system calls.
 After some suggestions for improvements, this is what I ended up with:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// SPDX-License-Identifier: GPL-2.0-or-later
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">test_cap</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> cap)
-{
-	<span style="color:#75715e">/* prctl returns 0 or 1 for valid caps, -1 otherwise */</span>
-	<span style="color:#66d9ef">return</span> prctl(PR_CAPBSET_READ, cap, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>) <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>;
-}
-
-<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">cap_last_cap</span>(<span style="color:#66d9ef">void</span>)
-{
-	<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> cap <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
-	FILE <span style="color:#f92672">*</span>f;
-
-	<span style="color:#66d9ef">if</span> (cap <span style="color:#f92672">!=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
-		<span style="color:#66d9ef">return</span> cap;
-
-	<span style="color:#75715e">/* try to read value from kernel, check that the path is
-</span><span style="color:#75715e">	 * indeed in a procfs mount */</span>
-	f <span style="color:#f92672">=</span> fopen(_PATH_PROC_CAPLASTCAP, <span style="color:#e6db74">&#34;r&#34;</span>);
-	<span style="color:#66d9ef">if</span> (f) {
-		<span style="color:#66d9ef">int</span> matched <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
-
-		<span style="color:#66d9ef">if</span> (proc_is_procfs(fileno(f))) {
-			matched <span style="color:#f92672">=</span> fscanf(f, <span style="color:#e6db74">&#34;%d&#34;</span>, <span style="color:#f92672">&amp;</span>cap);
-		}
-		fclose(f);
-
-		<span style="color:#75715e">/* we check if the cap after this one really isn&#39;t valid */</span>
-		<span style="color:#66d9ef">if</span> (matched <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&amp;&amp;</span> cap <span style="color:#f92672">&lt;</span> INT_MAX <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>test_cap(cap <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>))
-			<span style="color:#66d9ef">return</span> cap;
-	}
-
-	<span style="color:#75715e">/* if it wasn&#39;t possible to read the file in /proc,
-</span><span style="color:#75715e">	 * fall back to binary search over capabilities */</span>
-
-	<span style="color:#75715e">/* starting with cap=INT_MAX means we always know
-</span><span style="color:#75715e">	 * that cap1 is invalid after the first iteration */</span>
-	<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> cap0 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, cap1 <span style="color:#f92672">=</span> INT_MAX;
-	cap <span style="color:#f92672">=</span> INT_MAX;
-	<span style="color:#66d9ef">while</span> ((<span style="color:#66d9ef">int</span>)cap0 <span style="color:#f92672">&lt;</span> cap) {
-		<span style="color:#66d9ef">if</span> (test_cap(cap)) {
-			cap0 <span style="color:#f92672">=</span> cap;
-		} <span style="color:#66d9ef">else</span> {
-			cap1 <span style="color:#f92672">=</span> cap;
-		}
-		cap <span style="color:#f92672">=</span> (cap0 <span style="color:#f92672">+</span> cap1) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2U</span>;
-	}
-
-	<span style="color:#66d9ef">return</span> cap;
-}
-</code></pre></div><p>The advantage of this version of <code>cap_last_cap()</code> is that it doesn&rsquo;t even touch
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">// SPDX-License-Identifier: GPL-2.0-or-later
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">test_cap</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> cap)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">/* prctl returns 0 or 1 for valid caps, -1 otherwise */</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> prctl(PR_CAPBSET_READ, cap, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>) <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">cap_last_cap</span>(<span style="color:#66d9ef">void</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> cap <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>	FILE <span style="color:#f92672">*</span>f;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (cap <span style="color:#f92672">!=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> cap;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">/* try to read value from kernel, check that the path is
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 * indeed in a procfs mount */</span>
+</span></span><span style="display:flex;"><span>	f <span style="color:#f92672">=</span> fopen(_PATH_PROC_CAPLASTCAP, <span style="color:#e6db74">&#34;r&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (f) {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">int</span> matched <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (proc_is_procfs(fileno(f))) {
+</span></span><span style="display:flex;"><span>			matched <span style="color:#f92672">=</span> fscanf(f, <span style="color:#e6db74">&#34;%d&#34;</span>, <span style="color:#f92672">&amp;</span>cap);
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		fclose(f);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">/* we check if the cap after this one really isn&#39;t valid */</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (matched <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&amp;&amp;</span> cap <span style="color:#f92672">&lt;</span> INT_MAX <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>test_cap(cap <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> cap;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">/* if it wasn&#39;t possible to read the file in /proc,
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 * fall back to binary search over capabilities */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">/* starting with cap=INT_MAX means we always know
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 * that cap1 is invalid after the first iteration */</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> cap0 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, cap1 <span style="color:#f92672">=</span> INT_MAX;
+</span></span><span style="display:flex;"><span>	cap <span style="color:#f92672">=</span> INT_MAX;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">while</span> ((<span style="color:#66d9ef">int</span>)cap0 <span style="color:#f92672">&lt;</span> cap) {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (test_cap(cap)) {
+</span></span><span style="display:flex;"><span>			cap0 <span style="color:#f92672">=</span> cap;
+</span></span><span style="display:flex;"><span>		} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>			cap1 <span style="color:#f92672">=</span> cap;
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		cap <span style="color:#f92672">=</span> (cap0 <span style="color:#f92672">+</span> cap1) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2U</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> cap;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The advantage of this version of <code>cap_last_cap()</code> is that it doesn&rsquo;t even touch
 <code>CAP_LAST_CAP</code>, and the value returned by it can always be trusted. This
 allowed me to simply remove the restriction in <strong>setpriv(1)</strong>. Now, the only
 consequence regarding a mismatch between the capabilities supported by the
@@ -208,57 +208,57 @@ learned that the maximum value for capabilities supported by the kernel isn&rsqu
 <code>INT_MAX</code>, but instead 64 (at least as of 2020), because capabilities are
 tracked in the kernel and file systems as a bitmask stored in two 32-bit
 integers. The final version of libcap-ng&rsquo;s <code>init_lib</code> can be seen below:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// SPDX-License-Identifier: LGPL-2.1-or-later
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">init_lib</span>(<span style="color:#66d9ef">void</span>) __attribute__ ((constructor));
-<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">init_lib</span>(<span style="color:#66d9ef">void</span>)
-{
-<span style="color:#75715e">#ifdef HAVE_PTHREAD_H
-</span><span style="color:#75715e"></span>	pthread_atfork(NULL, NULL, deinit);
-<span style="color:#75715e">#endif
-</span><span style="color:#75715e"></span>	<span style="color:#75715e">// Detect last cap
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> (last_cap <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
-		<span style="color:#66d9ef">int</span> fd;
-
-		<span style="color:#75715e">// Try to read last cap from procfs
-</span><span style="color:#75715e"></span>		fd <span style="color:#f92672">=</span> open(<span style="color:#e6db74">&#34;/proc/sys/kernel/cap_last_cap&#34;</span>, O_RDONLY);
-		<span style="color:#66d9ef">if</span> (fd <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>) {
-<span style="color:#75715e">#ifdef HAVE_LINUX_MAGIC_H
-</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">struct</span> statfs st;
-			<span style="color:#75715e">// Bail out if procfs is invalid or fstatfs fails
-</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">if</span> (fstatfs(fd, <span style="color:#f92672">&amp;</span>st) <span style="color:#f92672">||</span> st.f_type <span style="color:#f92672">!=</span> PROC_SUPER_MAGIC)
-				<span style="color:#66d9ef">goto</span> fail;
-<span style="color:#75715e">#endif
-</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">char</span> buf[<span style="color:#ae81ff">8</span>];
-			<span style="color:#66d9ef">int</span> num <span style="color:#f92672">=</span> read(fd, buf, <span style="color:#66d9ef">sizeof</span>(buf) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>);
-			<span style="color:#66d9ef">if</span> (num <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>) {
-				buf[num] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
-				errno <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
-				<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> val <span style="color:#f92672">=</span> strtoul(buf, NULL, <span style="color:#ae81ff">10</span>);
-				<span style="color:#66d9ef">if</span> (errno <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
-					last_cap <span style="color:#f92672">=</span> val;
-			}
-fail:
-			close(fd);
-		}
-		<span style="color:#75715e">// Run a binary search over capabilities
-</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> (last_cap <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
-			<span style="color:#75715e">// starting with last_cap=MAX_CAP_VALUE means we always know
-</span><span style="color:#75715e"></span>			<span style="color:#75715e">// that cap1 is invalid after the first iteration
-</span><span style="color:#75715e"></span>			last_cap <span style="color:#f92672">=</span> MAX_CAP_VALUE;
-			<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> cap0 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, cap1 <span style="color:#f92672">=</span> MAX_CAP_VALUE;
-
-			<span style="color:#66d9ef">while</span> (cap0 <span style="color:#f92672">&lt;</span> last_cap) {
-				<span style="color:#66d9ef">if</span> (test_cap(last_cap))
-					cap0 <span style="color:#f92672">=</span> last_cap;
-				<span style="color:#66d9ef">else</span>
-					cap1 <span style="color:#f92672">=</span> last_cap;
-
-				last_cap <span style="color:#f92672">=</span> (cap0 <span style="color:#f92672">+</span> cap1) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2U</span>;
-			}
-		}
-	}
-}
-</code></pre></div><p>Interestingly, when I <a href="https://man.voidlinux.org/strace.1">strace(1)</a> programs
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">// SPDX-License-Identifier: LGPL-2.1-or-later
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">init_lib</span>(<span style="color:#66d9ef">void</span>) __attribute__ ((constructor));
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">init_lib</span>(<span style="color:#66d9ef">void</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#ifdef HAVE_PTHREAD_H
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	pthread_atfork(NULL, NULL, deinit);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// Detect last cap
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> (last_cap <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">int</span> fd;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// Try to read last cap from procfs
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		fd <span style="color:#f92672">=</span> open(<span style="color:#e6db74">&#34;/proc/sys/kernel/cap_last_cap&#34;</span>, O_RDONLY);
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (fd <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#ifdef HAVE_LINUX_MAGIC_H
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#66d9ef">struct</span> statfs st;
+</span></span><span style="display:flex;"><span>			<span style="color:#75715e">// Bail out if procfs is invalid or fstatfs fails
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#66d9ef">if</span> (fstatfs(fd, <span style="color:#f92672">&amp;</span>st) <span style="color:#f92672">||</span> st.f_type <span style="color:#f92672">!=</span> PROC_SUPER_MAGIC)
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">goto</span> fail;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#66d9ef">char</span> buf[<span style="color:#ae81ff">8</span>];
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">int</span> num <span style="color:#f92672">=</span> read(fd, buf, <span style="color:#66d9ef">sizeof</span>(buf) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> (num <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>				buf[num] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>				errno <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> val <span style="color:#f92672">=</span> strtoul(buf, NULL, <span style="color:#ae81ff">10</span>);
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> (errno <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>					last_cap <span style="color:#f92672">=</span> val;
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>fail:
+</span></span><span style="display:flex;"><span>			close(fd);
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// Run a binary search over capabilities
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> (last_cap <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>			<span style="color:#75715e">// starting with last_cap=MAX_CAP_VALUE means we always know
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#75715e">// that cap1 is invalid after the first iteration
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			last_cap <span style="color:#f92672">=</span> MAX_CAP_VALUE;
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> cap0 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, cap1 <span style="color:#f92672">=</span> MAX_CAP_VALUE;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">while</span> (cap0 <span style="color:#f92672">&lt;</span> last_cap) {
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> (test_cap(last_cap))
+</span></span><span style="display:flex;"><span>					cap0 <span style="color:#f92672">=</span> last_cap;
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>					cap1 <span style="color:#f92672">=</span> last_cap;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>				last_cap <span style="color:#f92672">=</span> (cap0 <span style="color:#f92672">+</span> cap1) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2U</span>;
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Interestingly, when I <a href="https://man.voidlinux.org/strace.1">strace(1)</a> programs
 that use <a href="https://sites.google.com/site/fullycapable/">libcap</a>, it seems they
 do a similar sweeping across capabilities using <strong>prctl(2)</strong>. I have yet to
 look at their code (stracing things is just so much simpler), but it would seem
@@ -285,7 +285,7 @@ improved the utilities whose limitations were affecting us now.</p>
 
 
 	<footer>
-	<p>&copy; 2021 <a href="https://erico.dev"><b>Érico&#39;s place</b></a>.
+	<p>&copy; 2022 <a href="https://erico.dev"><b>Érico&#39;s place</b></a>.
 	<a href="https://git.erico.dev"><b>Gitea</b></a>.
 	<a href="https://github.com/ericonr"><b>Github</b></a>.
 	</p>
